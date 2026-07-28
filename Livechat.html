@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Salesforce Omni-Channel Local Test</title>
+</head>
+<body>
+
+<h1>Omni-Channel Test Page</h1>
+<p>The chat widget will appear in the bottom right corner once the script loads.</p>
+
+<!-- Replace the values below with your specific Salesforce org details -->
+<script type='text/javascript'>
+    function initEmbeddedMessaging() {
+        try {
+            embeddedservice_bootstrap.settings.language = 'en_US';
+
+            // Your Embedded Service Deployment Name
+            embeddedservice_bootstrap.settings.devName = 'ESWConversation1783642005075';
+
+            // Initialize the SDK
+            embeddedservice_bootstrap.init(
+                '00DOy00000NSVy5',
+                'Conversation',
+                'https://unison-eos--eosdevv.sandbox.my.site.com/ESWConversation1783642005075',
+                {
+                    scrt2URL: 'https://unison-eos--eosdevv.sandbox.my.salesforce-scrt.com'
+                }
+            );
+        } catch (err) {
+            console.error('Error loading Embedded Messaging: ', err);
+        }
+    };
+</script>
+
+<!-- Load the Salesforce Embedded Service Script -->
+<script type='text/javascript' src='https://unison-eos--eosdevv.sandbox.my.site.com/ESWConversation1783642005075/assets/js/bootstrap.min.js' onload='initEmbeddedMessaging()'></script>
+
+</body>
+</html>
