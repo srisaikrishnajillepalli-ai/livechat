@@ -19,7 +19,8 @@
         console.log("ContactId:",contactId );
         
         try { 
-            embeddedservice_bootstrap.prechatAPI.setHiddenPrechatFields({ ContactId: contactId }); 
+            embeddedservice_bootstrap.prechatAPI.setHiddenPrechatFields({ ContactId: contactId });
+            console.log("Hidden Prechat field Set")
         } catch (e) { console.error(e); } });
     
     function initEmbeddedMessaging() {
