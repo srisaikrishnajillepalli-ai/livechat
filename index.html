@@ -15,6 +15,9 @@
 
  const contactId = "003Oy00001wW3P4IAK" ; 
     window.addEventListener("onEmbeddedMessagingReady", () => { 
+      console.log("Embedded Messaging Ready");
+        console.log("ContactId:",contactId );
+        
         try { 
             embeddedservice_bootstrap.prechatAPI.setHiddenPrechatFields({ ContactId: contactId }); 
         } catch (e) { console.error(e); } });
