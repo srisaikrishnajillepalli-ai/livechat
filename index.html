@@ -1,210 +1,52 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Unison</title>
-<style>
-  :root {
-    --ink: #14181F;
-    --paper: #FBFAF7;
-    --line: #E3E0D8;
-    --accent: #2C5F4F;
-    --muted: #6B6F76;
-  }
-  * { box-sizing: border-box; margin: 0; padding: 0; }
-  body {
-    font-family: -apple-system, "Segoe UI", Helvetica, Arial, sans-serif;
-    background: var(--paper);
-    color: var(--ink);
-    line-height: 1.5;
-  }
-  header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 22px 6%;
-    border-bottom: 1px solid var(--line);
-  }
-  .logo {
-    font-family: Georgia, "Times New Roman", serif;
-    font-size: 22px;
-    font-weight: 700;
-    letter-spacing: -0.5px;
-  }
-  nav a {
-    color: var(--ink);
-    text-decoration: none;
-    margin-left: 32px;
-    font-size: 14px;
-  }
-  nav a:hover { color: var(--accent); }
-  .hero {
-    padding: 90px 6% 70px;
-    max-width: 780px;
-  }
-  .eyebrow {
-    text-transform: uppercase;
-    letter-spacing: 2px;
-    font-size: 12px;
-    color: var(--accent);
-    font-weight: 600;
-    margin-bottom: 18px;
-  }
-  h1 {
-    font-family: Georgia, "Times New Roman", serif;
-    font-size: 52px;
-    line-height: 1.08;
-    letter-spacing: -1px;
-    margin-bottom: 22px;
-  }
-  .hero p {
-    font-size: 18px;
-    color: var(--muted);
-    max-width: 560px;
-    margin-bottom: 34px;
-  }
-  .btn {
-    display: inline-block;
-    background: var(--ink);
-    color: var(--paper);
-    padding: 14px 26px;
-    border-radius: 4px;
-    text-decoration: none;
-    font-size: 15px;
-    font-weight: 600;
-  }
-  .btn:hover { background: var(--accent); }
-  section.grid {
-    padding: 50px 6% 100px;
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 28px;
-    border-top: 1px solid var(--line);
-  }
-  .card {
-    padding: 26px;
-    border: 1px solid var(--line);
-    border-radius: 6px;
-    background: #fff;
-  }
-  .card .num {
-    font-family: Georgia, serif;
-    font-size: 13px;
-    color: var(--accent);
-    font-weight: 700;
-    margin-bottom: 10px;
-  }
-  .card h3 { font-size: 17px; margin-bottom: 8px; }
-  .card p { font-size: 14px; color: var(--muted); }
-  footer {
-    padding: 26px 6%;
-    border-top: 1px solid var(--line);
-    font-size: 13px;
-    color: var(--muted);
-    display: flex;
-    justify-content: space-between;
-  }
-  @media (max-width: 720px) {
-    h1 { font-size: 34px; }
-    section.grid { grid-template-columns: 1fr; }
-    nav a { margin-left: 16px; }
-  }
-</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Salesforce Omni-Channel Local Test</title>
 </head>
 <body>
 
-  <header>
-    <div class="logo">Unison</div>
-    <nav>
-      <a href="#">Product</a>
-      <a href="#">Pricing</a>
-      <a href="#">Support</a>
-      <a href="#">Contact</a>
-    </nav>
-  </header>
+<h1>Omni-Channel Test Page</h1>
+<p>The chat widget will appear in the bottom right corner once the script loads.</p>
 
-  <section class="hero">
-    <div class="eyebrow">Customer Support, Simplified</div>
-    <h1>Every question answered, without the wait.</h1>
-    <p>Unison brings your team, your knowledge base, and your customers into one conversation — live, on your website, whenever they need you.</p>
-    <a class="btn" href="#">Talk to us</a>
-  </section>
+<!-- Replace the values below with your specific Salesforce org details -->
+<script type='text/javascript'>
 
-  <section class="grid">
-    <div class="card">
-      <div class="num">01</div>
-      <h3>Instant answers</h3>
-      <p>Common questions get resolved the moment they're asked, day or night.</p>
-    </div>
-    <div class="card">
-      <div class="num">02</div>
-      <h3>Real people, when it matters</h3>
-      <p>Anything more complex is handed off to your team, with full context carried over.</p>
-    </div>
-    <div class="card">
-      <div class="num">03</div>
-      <h3>Built around your account</h3>
-      <p>Returning customers are recognized and routed to the person who already knows them.</p>
-    </div>
-  </section>
-
-  <footer>
-    <span>&copy; 2026 Unison</span>
-    <span>Privacy &middot; Terms</span>
-  </footer>
-
-  <!-- Salesforce Embedded Messaging -->
-  <script type='text/javascript'>
-    const contactId = "003Oy00001wW3P4IAK";
-
-    window.addEventListener("onEmbeddedMessagingReady", () => {
+ const contactId = "003Oy00001wW3P4IAK" ; 
+    window.addEventListener("onEmbeddedMessagingReady", () => { 
       console.log("Embedded Messaging Ready");
-      console.log("ContactId:", contactId);
-
-      try {
-        embeddedservice_bootstrap.prechatAPI.setHiddenPrechatFields({ ContactId: contactId });
-        console.log("Hidden Prechat field Set");
-      } catch (e) {
-        console.error(e);
-      }
-
-      // Open the chat window directly, no floating launcher button
-      embeddedservice_bootstrap.utilAPI.launchChat()
-        .then(() => {
-          console.log("Chat launched automatically");
-        })
-        .catch((err) => {
-          console.error("Error launching chat:", err);
-        });
-    });
-
+        console.log("ContactId:",contactId );
+        
+        try { 
+            embeddedservice_bootstrap.prechatAPI.setHiddenPrechatFields({ ContactId: contactId });
+            console.log("Hidden Prechat field Set")
+        } catch (e) { console.error(e); } });
+    
     function initEmbeddedMessaging() {
-      try {
-        embeddedservice_bootstrap.settings.language = 'en_US';
-        // Hide the default floating chat button on load
-        embeddedservice_bootstrap.settings.hideChatButtonOnLoad = true;
-        // Your Embedded Service Deployment Name
-        embeddedservice_bootstrap.settings.devName = 'ESWConversation1783642005075';
-        // Initialize the SDK
-        embeddedservice_bootstrap.init(
-          '00DOy00000NSVy5',
-          'Conversation',
-          'https://unison-eos--eosdevv.sandbox.my.site.com/ESWConversation1783642005075',
-          {
-            scrt2URL: 'https://unison-eos--eosdevv.sandbox.my.salesforce-scrt.com'
-          }
-        );
-      } catch (err) {
-        console.error('Error loading Embedded Messaging: ', err);
-      }
-    }
-  </script>
-  <script
-    type='text/javascript'
-    src='https://unison-eos--eosdevv.sandbox.my.site.com/ESWConversation1783642005075/assets/js/bootstrap.min.js'
-    onload='initEmbeddedMessaging()'
-  ></script>
+        try {
+            embeddedservice_bootstrap.settings.language = 'en_US';
+
+            // Your Embedded Service Deployment Name
+            embeddedservice_bootstrap.settings.devName = 'ESWConversation1783642005075';
+
+            // Initialize the SDK
+            embeddedservice_bootstrap.init(
+                '00DOy00000NSVy5',
+                'Conversation',
+                'https://unison-eos--eosdevv.sandbox.my.site.com/ESWConversation1783642005075',
+                {
+                    scrt2URL: 'https://unison-eos--eosdevv.sandbox.my.salesforce-scrt.com'
+                }
+            );
+        } catch (err) {
+            console.error('Error loading Embedded Messaging: ', err);
+        }
+    };
+</script>
+
+<!-- Load the Salesforce Embedded Service Script -->
+<script type='text/javascript' src='https://unison-eos--eosdevv.sandbox.my.site.com/ESWConversation1783642005075/assets/js/bootstrap.min.js' onload='initEmbeddedMessaging()'></script>
 
 </body>
 </html>
