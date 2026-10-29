@@ -111,10 +111,23 @@
     nav a { margin-left: 16px; }
   }
 
-  /* CSS Fallback to suppress "joined" / system participant events */
+  /* ------------------------------------------------------------- */
+  /* LOCAL CSS OVERRIDES TO MATCH YOUR TARGET CHAT UI              */
+  /* ------------------------------------------------------------- */
+
+  /* 1. Hide the "Unison AI joined Just now" system notification */
   embedded-messaging-event-message,
   [data-aura-class="embeddedMessagingEventMessage"],
   .embedded-messaging-event-container {
+    display: none !important;
+  }
+
+  /* 2. Hide "Unison AI" and timestamps underneath every text bubble */
+  embedded-messaging-chat-message .sender-name,
+  [data-aura-class="embeddedMessagingChatMessage"] .sender-name,
+  embedded-messaging-chat-message .timestamp-container,
+  [data-aura-class="embeddedMessagingChatMessage"] .timestamp-container,
+  .embedded-messaging-chat-message-timestamp {
     display: none !important;
   }
 </style>
@@ -161,22 +174,9 @@
     <span>Privacy &middot; Terms</span>
   </footer>
 
-<!-- Salesforce Messaging Configuration -->
+<!-- Salesforce Embedded Messaging Script -->
 <script type='text/javascript'>
   const contactId = "003Oy00001wW3P4IAK";
-
-  // Listen for the custom "End Chat" message dispatched from your LWC Header
-  window.addEventListener("message", (event) => {
-    if (event.data && event.data.type === "EMBEDDED_MESSAGING_END_CHAT") {
-      try {
-        if (window.embeddedservice_bootstrap && window.embeddedservice_bootstrap.userVerification) {
-          window.embeddedservice_bootstrap.userVerification.clearSession();
-        }
-      } catch (err) {
-        console.error("Error ending chat session:", err);
-      }
-    }
-  });
 
   window.addEventListener("onEmbeddedMessagingReady", () => { 
     console.log("Embedded Messaging Ready");
@@ -194,10 +194,10 @@
     try {
       embeddedservice_bootstrap.settings.language = 'en_US';
 
-      // Suppress the "Unison AI joined Just now" participant notification
+      // Suppress the join notification via bootstrap setting
       embeddedservice_bootstrap.settings.shouldShowParticipantChgEvntInConvHist = false;
 
-      // Your Embedded Service Deployment Name
+      // Embedded Service Deployment Name
       embeddedservice_bootstrap.settings.devName = 'ESWConversation1783642005075';
 
       // Initialize the SDK
