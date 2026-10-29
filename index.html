@@ -110,6 +110,13 @@
     section.grid { grid-template-columns: 1fr; }
     nav a { margin-left: 16px; }
   }
+
+  /* CSS Fallback to suppress "joined" / system participant events */
+  embedded-messaging-event-message,
+  [data-aura-class="embeddedMessagingEventMessage"],
+  .embedded-messaging-event-container {
+    display: none !important;
+  }
 </style>
 </head>
 <body>
@@ -153,39 +160,59 @@
     <span>&copy; 2026 Unison</span>
     <span>Privacy &middot; Terms</span>
   </footer>
-<!-- Replace the values below with your specific Salesforce org details -->
+
+<!-- Salesforce Messaging Configuration -->
 <script type='text/javascript'>
+  const contactId = "003Oy00001wW3P4IAK";
 
- const contactId = "003Oy00001wW3P4IAK" ; 
-    window.addEventListener("onEmbeddedMessagingReady", () => { 
-      console.log("Embedded Messaging Ready");
-        console.log("ContactId:",contactId );
-        
-        try { 
-            embeddedservice_bootstrap.prechatAPI.setHiddenPrechatFields({ ContactId: contactId });
-            console.log("Hidden Prechat field Set")
-        } catch (e) { console.error(e); } });
-    
-    function initEmbeddedMessaging() {
-        try {
-            embeddedservice_bootstrap.settings.language = 'en_US';
-
-            // Your Embedded Service Deployment Name
-            embeddedservice_bootstrap.settings.devName = 'ESWConversation1783642005075';
-
-            // Initialize the SDK
-            embeddedservice_bootstrap.init(
-                '00DOy00000NSVy5',
-                'Conversation',
-                'https://unison-eos--eosdevv.sandbox.my.site.com/ESWConversation1783642005075',
-                {
-                    scrt2URL: 'https://unison-eos--eosdevv.sandbox.my.salesforce-scrt.com'
-                }
-            );
-        } catch (err) {
-            console.error('Error loading Embedded Messaging: ', err);
+  // Listen for the custom "End Chat" message dispatched from your LWC Header
+  window.addEventListener("message", (event) => {
+    if (event.data && event.data.type === "EMBEDDED_MESSAGING_END_CHAT") {
+      try {
+        if (window.embeddedservice_bootstrap && window.embeddedservice_bootstrap.userVerification) {
+          window.embeddedservice_bootstrap.userVerification.clearSession();
         }
-    };
+      } catch (err) {
+        console.error("Error ending chat session:", err);
+      }
+    }
+  });
+
+  window.addEventListener("onEmbeddedMessagingReady", () => { 
+    console.log("Embedded Messaging Ready");
+    console.log("ContactId:", contactId);
+    
+    try { 
+      embeddedservice_bootstrap.prechatAPI.setHiddenPrechatFields({ ContactId: contactId });
+      console.log("Hidden Prechat field Set");
+    } catch (e) { 
+      console.error(e); 
+    } 
+  });
+  
+  function initEmbeddedMessaging() {
+    try {
+      embeddedservice_bootstrap.settings.language = 'en_US';
+
+      // Suppress the "Unison AI joined Just now" participant notification
+      embeddedservice_bootstrap.settings.shouldShowParticipantChgEvntInConvHist = false;
+
+      // Your Embedded Service Deployment Name
+      embeddedservice_bootstrap.settings.devName = 'ESWConversation1783642005075';
+
+      // Initialize the SDK
+      embeddedservice_bootstrap.init(
+        '00DOy00000NSVy5',
+        'Conversation',
+        'https://unison-eos--eosdevv.sandbox.my.site.com/ESWConversation1783642005075',
+        {
+          scrt2URL: 'https://unison-eos--eosdevv.sandbox.my.salesforce-scrt.com'
+        }
+      );
+    } catch (err) {
+      console.error('Error loading Embedded Messaging: ', err);
+    }
+  }
 </script>
 
 <!-- Load the Salesforce Embedded Service Script -->
