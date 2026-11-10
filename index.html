@@ -185,18 +185,18 @@
   window.addEventListener("onEmbeddedMessagingReady", () => { 
     console.log("Embedded Messaging Ready");
 
-    // 1. Silent Launch: Pre-open and connect in the background on load
+    // 1. Silent Background Warm-Up: Connects & fetches welcome message WITHOUT opening chat UI
     try {
-      if (embeddedservice_bootstrap.util && typeof embeddedservice_bootstrap.util.launchConversation === 'function') {
-        embeddedservice_bootstrap.util.launchConversation();
-        console.log("Session connected in background.");
+      if (embeddedservice_bootstrap.util && typeof embeddedservice_bootstrap.util.preStartConversation === 'function') {
+        embeddedservice_bootstrap.util.preStartConversation();
+        console.log("Session pre-started in background.");
       }
     } catch (e) {
-      console.warn("Auto-launch background warm up warning:", e);
+      console.warn("Background pre-start warning:", e);
     }
   });
 
-  // 2. Attach click handler to your "Talk to us" button to immediately show the pre-warmed chat window
+  // 2. Attach click handler to "Talk to us" button to open pre-warmed chat instantly
   document.addEventListener('DOMContentLoaded', () => {
     const talkBtn = document.getElementById('talkToUsBtn');
     if (talkBtn) {
