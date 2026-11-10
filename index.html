@@ -180,13 +180,19 @@
 
   window.addEventListener("onEmbeddedMessagingReady", () => { 
     console.log("Embedded Messaging Ready");
-    console.log("ContactId:", contactId);
     
     try { 
+      // 1. Set hidden prechat fields
       embeddedservice_bootstrap.prechatAPI.setHiddenPrechatFields({ ContactId: contactId });
       console.log("Hidden Prechat field Set");
+
+      // 2. Pre-load conversation & agent session in background
+      if (embeddedservice_bootstrap.util && typeof embeddedservice_bootstrap.util.preStartConversation === 'function') {
+        embeddedservice_bootstrap.util.preStartConversation();
+        console.log("Pre-started conversation in background");
+      }
     } catch (e) { 
-      console.error(e); 
+      console.error("Error warming up conversation:", e); 
     } 
   });
   
