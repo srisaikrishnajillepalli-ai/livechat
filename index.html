@@ -73,6 +73,7 @@
     text-decoration: none;
     font-size: 15px;
     font-weight: 600;
+    cursor: pointer;
   }
   .btn:hover { background: var(--accent); }
   section.grid {
@@ -115,6 +116,11 @@
   /* LOCAL CSS OVERRIDES TO MATCH YOUR TARGET CHAT UI              */
   /* ------------------------------------------------------------- */
 
+  /* Hide default launcher floating button until user clicks "Talk to us" */
+  .embeddedMessagingConversationButtonLoaded {
+    display: block !important;
+  }
+
   /* 1. Hide the "Unison AI joined Just now" system notification */
   embedded-messaging-event-message,
   [data-aura-class="embeddedMessagingEventMessage"],
@@ -148,7 +154,7 @@
     <div class="eyebrow">Customer Support, Simplified</div>
     <h1>Every question answered, without the wait.</h1>
     <p>Unison brings your team, your knowledge base, and your customers into one conversation — live, on your website, whenever they need you.</p>
-    <a class="btn" href="#">Talk to us</a>
+    <button class="btn" id="talkToUsBtn">Talk to us</button>
   </section>
 
   <section class="grid">
@@ -176,31 +182,42 @@
 
 <!-- Salesforce Embedded Messaging Script -->
 <script type='text/javascript'>
-  const contactId = "003Oy00001wW3P4IAK";
-
   window.addEventListener("onEmbeddedMessagingReady", () => { 
     console.log("Embedded Messaging Ready");
-    
-    try { 
-      // 1. Set hidden prechat fields
-      embeddedservice_bootstrap.prechatAPI.setHiddenPrechatFields({ ContactId: contactId });
-      console.log("Hidden Prechat field Set");
 
-      // 2. Pre-load conversation & agent session in background
-      if (embeddedservice_bootstrap.util && typeof embeddedservice_bootstrap.util.preStartConversation === 'function') {
-        embeddedservice_bootstrap.util.preStartConversation();
-        console.log("Pre-started conversation in background");
+    // 1. Silent Launch: Pre-open and connect in the background on load
+    try {
+      if (embeddedservice_bootstrap.util && typeof embeddedservice_bootstrap.util.launchConversation === 'function') {
+        embeddedservice_bootstrap.util.launchConversation();
+        console.log("Session connected in background.");
       }
-    } catch (e) { 
-      console.error("Error warming up conversation:", e); 
-    } 
+    } catch (e) {
+      console.warn("Auto-launch background warm up warning:", e);
+    }
+  });
+
+  // 2. Attach click handler to your "Talk to us" button to immediately show the pre-warmed chat window
+  document.addEventListener('DOMContentLoaded', () => {
+    const talkBtn = document.getElementById('talkToUsBtn');
+    if (talkBtn) {
+      talkBtn.addEventListener('click', (e) => {
+        e.preventDefault();
+        try {
+          if (embeddedservice_bootstrap.util && typeof embeddedservice_bootstrap.util.launchConversation === 'function') {
+            embeddedservice_bootstrap.util.launchConversation();
+          }
+        } catch (err) {
+          console.error("Error launching conversation:", err);
+        }
+      });
+    }
   });
   
   function initEmbeddedMessaging() {
     try {
       embeddedservice_bootstrap.settings.language = 'en_US';
 
-      // Suppress the join notification via bootstrap setting
+      // Suppress join notification
       embeddedservice_bootstrap.settings.shouldShowParticipantChgEvntInConvHist = false;
 
       // Embedded Service Deployment Name
