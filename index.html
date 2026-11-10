@@ -113,27 +113,22 @@
   }
 
   /* ------------------------------------------------------------- */
-  /* LOCAL CSS OVERRIDES TO MATCH YOUR TARGET CHAT UI              */
+  /* LOCAL CSS OVERRIDES TO PREVENT AUTO-POP VISIBILITY            */
   /* ------------------------------------------------------------- */
 
-  /* Hide default launcher floating button until user clicks "Talk to us" */
-  .embeddedMessagingConversationButtonLoaded {
-    display: block !important;
-  }
-
-  /* 1. Hide the "Unison AI joined Just now" system notification */
-  embedded-messaging-event-message,
-  [data-aura-class="embeddedMessagingEventMessage"],
-  .embedded-messaging-event-container {
+  /* Hide the Salesforce default floating chat launcher completely */
+  .embeddedMessagingConversationButtonLoaded,
+  embedded-messaging-button,
+  .embeddedMessagingFrame:not(.is-active) {
     display: none !important;
   }
 
-  /* 2. Hide "Unison AI" and timestamps underneath every text bubble */
+  /* Hide system join messages & extra timestamps inside bubbles */
+  embedded-messaging-event-message,
+  [data-aura-class="embeddedMessagingEventMessage"],
+  .embedded-messaging-event-container,
   embedded-messaging-chat-message .sender-name,
-  [data-aura-class="embeddedMessagingChatMessage"] .sender-name,
-  embedded-messaging-chat-message .timestamp-container,
-  [data-aura-class="embeddedMessagingChatMessage"] .timestamp-container,
-  .embedded-messaging-chat-message-timestamp {
+  embedded-messaging-chat-message .timestamp-container {
     display: none !important;
   }
 </style>
@@ -154,7 +149,7 @@
     <div class="eyebrow">Customer Support, Simplified</div>
     <h1>Every question answered, without the wait.</h1>
     <p>Unison brings your team, your knowledge base, and your customers into one conversation — live, on your website, whenever they need you.</p>
-    <button class="btn" id="talkToUsBtn">Talk to us</button>
+    <button class="btn" id="talkToUsBtn">Ask me Anything</button>
   </section>
 
   <section class="grid">
@@ -185,18 +180,17 @@
   window.addEventListener("onEmbeddedMessagingReady", () => { 
     console.log("Embedded Messaging Ready");
 
-    // 1. Silent Background Warm-Up: Connects & fetches welcome message WITHOUT opening chat UI
+    // Pre-start conversation silently on page load so session & greeting load behind the scenes
     try {
       if (embeddedservice_bootstrap.util && typeof embeddedservice_bootstrap.util.preStartConversation === 'function') {
         embeddedservice_bootstrap.util.preStartConversation();
-        console.log("Session pre-started in background.");
       }
     } catch (e) {
-      console.warn("Background pre-start warning:", e);
+      console.warn("Pre-start warning:", e);
     }
   });
 
-  // 2. Attach click handler to "Talk to us" button to open pre-warmed chat instantly
+  // Attach click handler to launch pre-warmed chat instantly
   document.addEventListener('DOMContentLoaded', () => {
     const talkBtn = document.getElementById('talkToUsBtn');
     if (talkBtn) {
@@ -216,14 +210,9 @@
   function initEmbeddedMessaging() {
     try {
       embeddedservice_bootstrap.settings.language = 'en_US';
-
-      // Suppress join notification
       embeddedservice_bootstrap.settings.shouldShowParticipantChgEvntInConvHist = false;
-
-      // Embedded Service Deployment Name
       embeddedservice_bootstrap.settings.devName = 'ESWConversation1783642005075';
 
-      // Initialize the SDK
       embeddedservice_bootstrap.init(
         '00DOy00000NSVy5',
         'Conversation',
@@ -238,7 +227,6 @@
   }
 </script>
 
-<!-- Load the Salesforce Embedded Service Script -->
 <script type='text/javascript' src='https://unison-eos--eosdevv.sandbox.my.site.com/ESWConversation1783642005075/assets/js/bootstrap.min.js' onload='initEmbeddedMessaging()'></script>
 
 </body>
