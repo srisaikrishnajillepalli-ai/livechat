@@ -185,6 +185,10 @@
     try { 
       embeddedservice_bootstrap.prechatAPI.setHiddenPrechatFields({ ContactId: contactId });
       console.log("Hidden Prechat field Set");
+
+      // Auto-load / open the chat window immediately upon setup completion
+      embeddedservice_bootstrap.utilAPI.launchChat();
+      console.log("Chat window auto-launched");
     } catch (e) { 
       console.error(e); 
     } 
@@ -193,6 +197,9 @@
   function initEmbeddedMessaging() {
     try {
       embeddedservice_bootstrap.settings.language = 'en_US';
+
+      // Hide the standard floating action button badge from flickering on load
+      embeddedservice_bootstrap.settings.hideChatButtonOnLoad = true;
 
       // Suppress the join notification via bootstrap setting
       embeddedservice_bootstrap.settings.shouldShowParticipantChgEvntInConvHist = false;
