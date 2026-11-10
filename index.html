@@ -113,17 +113,16 @@
   }
 
   /* ------------------------------------------------------------- */
-  /* LOCAL CSS OVERRIDES TO PREVENT AUTO-POP VISIBILITY            */
+  /* LOCAL CSS OVERRIDES                                           */
   /* ------------------------------------------------------------- */
 
-  /* Hide the Salesforce default floating chat launcher completely */
+  /* Hide default floating chat button icon so ONLY your button shows */
   .embeddedMessagingConversationButtonLoaded,
-  embedded-messaging-button,
-  .embeddedMessagingFrame:not(.is-active) {
+  embedded-messaging-button {
     display: none !important;
   }
 
-  /* Hide system join messages & extra timestamps inside bubbles */
+  /* Hide system join notifications & timestamp subtitles */
   embedded-messaging-event-message,
   [data-aura-class="embeddedMessagingEventMessage"],
   .embedded-messaging-event-container,
@@ -180,7 +179,7 @@
   window.addEventListener("onEmbeddedMessagingReady", () => { 
     console.log("Embedded Messaging Ready");
 
-    // Pre-start conversation silently on page load so session & greeting load behind the scenes
+    // Pre-start session in background silently so there is zero delay when clicked
     try {
       if (embeddedservice_bootstrap.util && typeof embeddedservice_bootstrap.util.preStartConversation === 'function') {
         embeddedservice_bootstrap.util.preStartConversation();
@@ -190,7 +189,7 @@
     }
   });
 
-  // Attach click handler to launch pre-warmed chat instantly
+  // Attach click handler to your custom button
   document.addEventListener('DOMContentLoaded', () => {
     const talkBtn = document.getElementById('talkToUsBtn');
     if (talkBtn) {
@@ -227,6 +226,7 @@
   }
 </script>
 
+<!-- Load the Salesforce Embedded Service Script -->
 <script type='text/javascript' src='https://unison-eos--eosdevv.sandbox.my.site.com/ESWConversation1783642005075/assets/js/bootstrap.min.js' onload='initEmbeddedMessaging()'></script>
 
 </body>
