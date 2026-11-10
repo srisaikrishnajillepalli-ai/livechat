@@ -113,16 +113,30 @@
   }
 
   /* ------------------------------------------------------------- */
-  /* LOCAL CSS OVERRIDES                                           */
+  /* LOCAL CSS OVERRIDES - HIDE CHAT UNTIL ACTIVATED BY BUTTON     */
   /* ------------------------------------------------------------- */
 
-  /* Hide default floating chat button icon so ONLY your button shows */
+  /* Always hide the default floating action button icon */
   .embeddedMessagingConversationButtonLoaded,
   embedded-messaging-button {
     display: none !important;
   }
 
-  /* Hide system join notifications & timestamp subtitles */
+  /* Hide the conversation window by default on load */
+  body:not(.chat-open) embedded-messaging-conversation-app,
+  body:not(.chat-open) .embeddedMessagingFrame {
+    display: none !important;
+    visibility: hidden !important;
+  }
+
+  /* Show the conversation window once the class 'chat-open' is added */
+  body.chat-open embedded-messaging-conversation-app,
+  body.chat-open .embeddedMessagingFrame {
+    display: block !important;
+    visibility: visible !important;
+  }
+
+  /* Hide system join notifications & extra timestamps inside bubbles */
   embedded-messaging-event-message,
   [data-aura-class="embeddedMessagingEventMessage"],
   .embedded-messaging-event-container,
@@ -179,7 +193,7 @@
   window.addEventListener("onEmbeddedMessagingReady", () => { 
     console.log("Embedded Messaging Ready");
 
-    // Pre-start session in background silently so there is zero delay when clicked
+    // Pre-start session silently behind the scenes
     try {
       if (embeddedservice_bootstrap.util && typeof embeddedservice_bootstrap.util.preStartConversation === 'function') {
         embeddedservice_bootstrap.util.preStartConversation();
@@ -195,6 +209,10 @@
     if (talkBtn) {
       talkBtn.addEventListener('click', (e) => {
         e.preventDefault();
+        
+        // Add class to unhide the pre-warmed chat UI instantly
+        document.body.classList.add('chat-open');
+
         try {
           if (embeddedservice_bootstrap.util && typeof embeddedservice_bootstrap.util.launchConversation === 'function') {
             embeddedservice_bootstrap.util.launchConversation();
