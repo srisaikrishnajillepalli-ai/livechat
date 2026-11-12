@@ -73,7 +73,6 @@
     text-decoration: none;
     font-size: 15px;
     font-weight: 600;
-    cursor: pointer;
   }
   .btn:hover { background: var(--accent); }
   section.grid {
@@ -113,35 +112,22 @@
   }
 
   /* ------------------------------------------------------------- */
-  /* LOCAL CSS OVERRIDES - HIDE CHAT UNTIL ACTIVATED BY BUTTON     */
+  /* LOCAL CSS OVERRIDES TO MATCH YOUR TARGET CHAT UI              */
   /* ------------------------------------------------------------- */
 
-  /* Always hide the default floating action button icon */
-  .embeddedMessagingConversationButtonLoaded,
-  embedded-messaging-button {
-    display: none !important;
-  }
-
-  /* Hide the conversation window by default on load */
-  body:not(.chat-open) embedded-messaging-conversation-app,
-  body:not(.chat-open) .embeddedMessagingFrame {
-    display: none !important;
-    visibility: hidden !important;
-  }
-
-  /* Show the conversation window once the class 'chat-open' is added */
-  body.chat-open embedded-messaging-conversation-app,
-  body.chat-open .embeddedMessagingFrame {
-    display: block !important;
-    visibility: visible !important;
-  }
-
-  /* Hide system join notifications & extra timestamps inside bubbles */
+  /* 1. Hide the "Unison AI joined Just now" system notification */
   embedded-messaging-event-message,
   [data-aura-class="embeddedMessagingEventMessage"],
-  .embedded-messaging-event-container,
+  .embedded-messaging-event-container {
+    display: none !important;
+  }
+
+  /* 2. Hide "Unison AI" and timestamps underneath every text bubble */
   embedded-messaging-chat-message .sender-name,
-  embedded-messaging-chat-message .timestamp-container {
+  [data-aura-class="embeddedMessagingChatMessage"] .sender-name,
+  embedded-messaging-chat-message .timestamp-container,
+  [data-aura-class="embeddedMessagingChatMessage"] .timestamp-container,
+  .embedded-messaging-chat-message-timestamp {
     display: none !important;
   }
 </style>
@@ -162,7 +148,7 @@
     <div class="eyebrow">Customer Support, Simplified</div>
     <h1>Every question answered, without the wait.</h1>
     <p>Unison brings your team, your knowledge base, and your customers into one conversation — live, on your website, whenever they need you.</p>
-    <button class="btn" id="talkToUsBtn">Ask me Anything</button>
+    <a class="btn" href="#">Talk to us</a>
   </section>
 
   <section class="grid">
@@ -190,46 +176,32 @@
 
 <!-- Salesforce Embedded Messaging Script -->
 <script type='text/javascript'>
-  window.addEventListener("onEmbeddedMessagingReady", () => { 
+  window.addEventListener("onEmbeddedMessagingReady", () => {
     console.log("Embedded Messaging Ready");
 
-    // Pre-start session silently behind the scenes
-    try {
-      if (embeddedservice_bootstrap.util && typeof embeddedservice_bootstrap.util.preStartConversation === 'function') {
-        embeddedservice_bootstrap.util.preStartConversation();
-      }
-    } catch (e) {
-      console.warn("Pre-start warning:", e);
-    }
+    // Open the chat automatically, once per browser session
+    let alreadyOpened = false;
+    try { alreadyOpened = sessionStorage.getItem("chatAutoOpened") === "1"; } catch (e) {}
+    if (alreadyOpened) return;
+    try { sessionStorage.setItem("chatAutoOpened", "1"); } catch (e) {}
+
+    console.time("launchChat");
+    embeddedservice_bootstrap.utilAPI.launchChat()
+      .then(() => console.timeEnd("launchChat"))
+      .catch((e) => console.error("launchChat failed", e));
   });
 
-  // Attach click handler to your custom button
-  document.addEventListener('DOMContentLoaded', () => {
-    const talkBtn = document.getElementById('talkToUsBtn');
-    if (talkBtn) {
-      talkBtn.addEventListener('click', (e) => {
-        e.preventDefault();
-        
-        // Add class to unhide the pre-warmed chat UI instantly
-        document.body.classList.add('chat-open');
-
-        try {
-          if (embeddedservice_bootstrap.util && typeof embeddedservice_bootstrap.util.launchConversation === 'function') {
-            embeddedservice_bootstrap.util.launchConversation();
-          }
-        } catch (err) {
-          console.error("Error launching conversation:", err);
-        }
-      });
-    }
-  });
-  
   function initEmbeddedMessaging() {
     try {
       embeddedservice_bootstrap.settings.language = 'en_US';
+
+      // Suppress the join notification via bootstrap setting
       embeddedservice_bootstrap.settings.shouldShowParticipantChgEvntInConvHist = false;
+
+      // Embedded Service Deployment Name
       embeddedservice_bootstrap.settings.devName = 'ESWConversation1783642005075';
 
+      // Initialize the SDK
       embeddedservice_bootstrap.init(
         '00DOy00000NSVy5',
         'Conversation',
